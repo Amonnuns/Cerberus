@@ -33,7 +33,7 @@ public class GateController {
     @PostMapping("/exit")
     public ResponseEntity<Object> saida( @RequestBody UserLoginForm userLoginForm) {
 
-        if (gateService.hasEntry(userLoginForm.getUsername())) {
+        if (gateService.hasEntered(userLoginForm.getUsername())) {
             boolean hasPermission = gateService.verificaPermissao(userLoginForm);
             //todo: verificar se existe entrada sem saída
             if (hasPermission) {

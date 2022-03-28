@@ -67,7 +67,7 @@ public class GateService {
         return false;
     }
 
-    public boolean hasEntry(String username) {
+    public boolean hasEntered(String username) {
         UserHistoricalModel historical = gateRepository
                 .findFirstByUserNameOrderByDateOfInsertDesc(username);
 
