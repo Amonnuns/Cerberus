@@ -1,0 +1,17 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: gate
+  datasource:
+    password: cerberuspass
+    url: jdbc:postgresql://localhost:5432/gate
+    username: cerberususer
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
