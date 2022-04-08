@@ -28,6 +28,18 @@ public class User {
     private LocalDateTime registrationDate;
 
 
+    public User() {
+    }
+
+    public User(String firstName, String lastName, String userName, String password, Boolean isBlocked, LocalDateTime registrationDate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+        this.isBlocked = isBlocked;
+        this.registrationDate = registrationDate;
+    }
+
     public UUID getId() {
         return id;
     }

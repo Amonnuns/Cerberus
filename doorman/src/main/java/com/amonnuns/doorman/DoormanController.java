@@ -5,9 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/doorman")
+@RequestMapping(value = "/api/v1/doorman")
 public class DoormanController {
 
     private final DoormanService doormanService;
@@ -18,13 +19,17 @@ public class DoormanController {
 
 
     @PostMapping("/subscribe")
-    public ResponseEntity<Object> cadastraUsuário(@RequestBody @Valid UserDto userDto){
+    public ResponseEntity<Object> cadastraUsuario(@RequestBody User user){
 
-        User user = doormanService.cadastrarUsuário(userDto);
+        Optional<User> userReturn = doormanService.cadastrarUsuário(user);
+        if(userReturn.isEmpty()){
+            return ResponseEntity.status(HttpStatus.CREATED).body("User already created");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(userReturn.get());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
 
     }
+
     @PostMapping("/permission")
     public boolean verificaPermissao(@RequestBody UserLoginForm loginForm){
 

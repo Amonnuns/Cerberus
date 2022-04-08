@@ -12,6 +12,12 @@ public class UserDto {
     @NotBlank
     private String password;
 
+    public UserDto(String firstName, String lastName, String userName, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+    }
 
     public String getFirstName() {
         return firstName;
