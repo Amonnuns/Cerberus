@@ -1,11 +1,9 @@
 spring:
-  application:
-    name: doorman
   datasource:
     password: sa
-    url: jdbc:h2://mem:db;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:mydb
     username: sa
-    driver-class-name: org.h2.Driver
+    driverClassName: org.h2.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop

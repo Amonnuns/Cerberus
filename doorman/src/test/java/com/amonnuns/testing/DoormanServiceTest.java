@@ -1,6 +1,5 @@
 package com.amonnuns.testing;
 
-
 import com.amonnuns.doorman.DoormanService;
 import com.amonnuns.doorman.User;
 import com.amonnuns.doorman.UserLoginForm;
@@ -21,7 +20,7 @@ import org.springframework.data.domain.Example;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-class DoormanServiceTest {
+public class DoormanServiceTest {
 
     @Mock
     private UserRepository userRepository;
