@@ -45,4 +45,19 @@ public class UserRepositoryTest {
                 );
     }
 
+    @Test
+    void deveEncontrarPorUsername(){
+        String userName = "userteste";
+        String password = "passwordtest";
+
+        User user = new User("user", "teste",
+                userName, password, false, LocalDateTime.now());
+
+        userRepository.save(user);
+
+        User userReturned = userRepository.findByUserName(userName);
+        assertThat(userReturned.getUserName())
+                .isEqualTo(userName);
+    }
+
 }
