@@ -16,6 +16,15 @@ public class UserHistoricalModel {
     private String actionType;
     private LocalDateTime dateOfInsert;
 
+    public UserHistoricalModel() {
+    }
+
+    public UserHistoricalModel(String userName, String actionType, LocalDateTime dateOfInsert) {
+        this.userName = userName;
+        this.actionType = actionType;
+        this.dateOfInsert = dateOfInsert;
+    }
+
     public LocalDateTime getDateOfInsert() {
         return dateOfInsert;
     }

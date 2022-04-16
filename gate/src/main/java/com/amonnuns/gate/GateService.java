@@ -59,8 +59,6 @@ public class GateService {
         UserHistoricalModel historical = gateRepository
                 .findFirstByUserNameOrderByDateOfInsertDesc(username);
 
-        System.out.println(historical.getActionType());
-
         if(this.exit.equals(historical.getActionType())){
             return true;
         }
