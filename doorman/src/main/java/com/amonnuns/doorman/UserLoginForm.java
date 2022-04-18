@@ -1,10 +1,13 @@
 package com.amonnuns.doorman;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserLoginForm {
     private String username;
     private String password;
 
-    public UserLoginForm(String username, String password) {
+    public UserLoginForm(@JsonProperty("username") String username,
+                         @JsonProperty("password") String password) {
         this.username = username;
         this.password = password;
     }
