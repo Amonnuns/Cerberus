@@ -24,7 +24,16 @@ services:
     ports:
       - "5050:80"
     restart: unless-stopped
+  rabbitmq:
+    container_name: rabbit_cerberus
+    build: .
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:guest}
+    volumes:
+      - rabbitmq_cerberus:/var/lib/rabbitmq
 
 volumes:
   postgres_cerberus:
   pgadmin_cerberus:
+  rabbitmq_cerberus:
