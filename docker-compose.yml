@@ -4,8 +4,8 @@ services:
     container_name: postgresCerberus
     image: postgres
     environment:
-      POSTGRES_USER: "youruserhere"
-      POSTGRES_PASSWORD: "yourpasswordhere"
+      POSTGRES_USER: cerberususer
+      POSTGRES_PASSWORD: cerberuspass
       PGDATA: /data/postgres
     volumes:
       - postgres_cerberus:/data/postgres
@@ -28,10 +28,15 @@ services:
     container_name: rabbit_cerberus
     build: .
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:guest}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:guest}
+      RABBITMQ_DEFAULT_USER: cerberususer
+      RABBITMQ_DEFAULT_PASS: cerberuspass
     volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - rabbitmq_cerberus:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "1883:1883"
 
 volumes:
   postgres_cerberus:
