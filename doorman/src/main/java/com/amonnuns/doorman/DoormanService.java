@@ -1,6 +1,5 @@
 package com.amonnuns.doorman;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,6 @@ public class DoormanService {
 
         return Optional.of(user);
     }
-
 
 
     public boolean verificaPermissao(UserLoginForm loginForm){
