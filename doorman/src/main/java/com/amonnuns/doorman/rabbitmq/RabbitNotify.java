@@ -10,7 +10,7 @@ public class RabbitNotify {
     private final RabbitTemplate rabbitTemplate;
 
     private static final String NOME_EXCHANGE = "notifyNODE";
-    private static final String ROUTING_KEY =  "cerberus/news";
+    private static final String ROUTING_KEY =  "cerberus.news";
 
     public RabbitNotify(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
