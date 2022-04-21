@@ -1,12 +1,17 @@
 server:
   port: 8080
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: cerberususer
+    password: cerberuspass
   application:
     name: doorman
   datasource:
-    password: "yourpasswordhere"
+    password: cerberuspass
     url: jdbc:postgresql://localhost:5432/user
-    username: "youruserhere"
+    username: cerberususer
   jpa:
     hibernate:
       ddl-auto: update
