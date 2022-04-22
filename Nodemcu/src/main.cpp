@@ -1,10 +1,12 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <LiquidCrystal_I2C.h>
 #include <ConstantDefs.h>
 #include <string>
 
 WiFiClient nodemcuClient;
 PubSubClient client(nodemcuClient);
+LiquidCrystal_I2C lcd(endereco, colunas, linhas);
 
 void connect_wifi(){
   WiFi.begin(ssid, password);
@@ -17,19 +19,24 @@ void connect_wifi(){
   Serial.println(WiFi.localIP());
 }
 
-char* convertBytetoString(byte* payload){
-  char str[(sizeof payload) + 1];
-  memcpy(str, payload, sizeof payload);
-  str[sizeof payload] = 0; // Null termination.
-
-  return str;
+char* convertBytetoString(byte* payload, unsigned int length, char* message){
+  
+  for (auto i = 0; i < length; i++) {
+    message[i] = (char)payload[i];
+  }
+  message[length] = 0;
+  return message;
+}
+void writeMessage(char* message){
+  
 }
 
 void callback(const char* topic, byte* payload, unsigned int length){
-  Serial.println("Message received from topic:");
-  Serial.print(topic);
-  char* message = convertBytetoString(payload);
-  Serial.println(message);
+  char message[length + 1];
+  char* message_return;
+
+  message_return = convertBytetoString(payload, length, message);
+  Serial.println(message_return);
 }
 
 
@@ -55,6 +62,9 @@ void reconnect(){
 void setup() {
   Serial.begin(115200);
   connect_wifi();
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
   client.connect("Nodemcu", mqtt_user, mqtt_pass);
