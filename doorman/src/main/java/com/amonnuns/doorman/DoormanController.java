@@ -27,8 +27,7 @@ public class DoormanController {
         if(userReturn.isEmpty()){
             return ResponseEntity.status(HttpStatus.CREATED).body("User already created");
         }
-        String message = "User: %s was created with username: %s".formatted(
-                user.getFirstName(), user.getUserName());
+        String message = "username: %s was created".formatted(user.getUserName());
         rabbitNotify.enviarNotificacao(message);
         return ResponseEntity.status(HttpStatus.CREATED).body(userReturn.get());
 
@@ -45,7 +44,7 @@ public class DoormanController {
     public ResponseEntity<Object> bloqueiaUsuario(@PathVariable(value = "username") String username){
 
         if(doormanService.bloqueiaUsuario(username)){
-            String message = "User with username: %s was blocked".formatted(username);
+            String message = "Username: %s was blocked".formatted(username);
             rabbitNotify.enviarNotificacao(message);
             return ResponseEntity.status(HttpStatus.OK).body("Usuário bloqueado");
         }
@@ -55,7 +54,7 @@ public class DoormanController {
     public ResponseEntity<Object> desbloqueiaUsuario(@PathVariable(value = "username") String username){
 
         if(doormanService.desbloqueiaUsuario(username)){
-            String message = "User with username: %s was unblocked".formatted(username);
+            String message = "Username: %s was unblocked".formatted(username);
             rabbitNotify.enviarNotificacao(message);
             return ResponseEntity.status(HttpStatus.OK).body("Usuário desbloqueado");
 
