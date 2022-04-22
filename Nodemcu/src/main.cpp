@@ -28,7 +28,16 @@ char* convertBytetoString(byte* payload, unsigned int length, char* message){
   return message;
 }
 void writeMessage(char* message){
-  
+  lcd.clear();
+  lcd.home();
+  char str[16+1];
+  strncpy(str,message, 16);
+  str[16]=0;
+  lcd.print(str);
+  lcd.setCursor(0,1);
+  strncpy(str,message+16, 16);
+  str[16]=0;
+  lcd.print(str);
 }
 
 void callback(const char* topic, byte* payload, unsigned int length){
@@ -36,7 +45,7 @@ void callback(const char* topic, byte* payload, unsigned int length){
   char* message_return;
 
   message_return = convertBytetoString(payload, length, message);
-  Serial.println(message_return);
+  writeMessage(message);
 }
 
 
