@@ -1,12 +1,17 @@
 server:
-  port: 8081
+  port: ${GATE_PORT:8081}
 spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:cerberususer}
+    password: ${RABBITMQ_PASS:cerberuspass}
   application:
     name: gate
   datasource:
-    password: cerberuspass
-    url: jdbc:postgresql://localhost:5432/gate
-    username: cerberususer
+    password: ${POSTGRES_PASS:cerberuspass}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/gate
+    username: ${POSTGRES_USER:cerberususer}
   jpa:
     hibernate:
       ddl-auto: update
