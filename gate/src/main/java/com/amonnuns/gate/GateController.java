@@ -1,5 +1,6 @@
 package com.amonnuns.gate;
 
+import com.amonnuns.gate.rabbitmq.RabbitNotify;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/gate")
 public class GateController {
 
-    GateService gateService;
+    private final GateService gateService;
+    private final RabbitNotify rabbitNotify;
 
-    public GateController(GateService gateService) {
+    public GateController(GateService gateService, RabbitNotify rabbitNotify) {
         this.gateService = gateService;
+        this.rabbitNotify = rabbitNotify;
     }
 
     @PostMapping("/entry")
@@ -20,13 +23,17 @@ public class GateController {
         if(gateService.hasExited(userLoginForm.getUsername())) {
             boolean hasPermission = gateService.verificaPermissao(userLoginForm);
             if (hasPermission) {
-                //todo: avisa ao nodemcu
+                String message = "%s has entered".formatted(userLoginForm.getUsername());
+                rabbitNotify.enviarNotificacao(message);
                 gateService.saveEntry(userLoginForm);
                 return ResponseEntity.status(HttpStatus.OK).body("Acesso liberado");
             }
+            String message = "Attempt:%s access denied".formatted(userLoginForm.getUsername());
+            rabbitNotify.enviarNotificacao(message);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso Negado");
         }
-        //todo: avisa nodemcu
+        String message = "%s has already entered".formatted(userLoginForm.getUsername());
+        rabbitNotify.enviarNotificacao(message);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Entrada Duplicada");
     }
 
@@ -35,16 +42,18 @@ public class GateController {
 
         if (gateService.hasEntered(userLoginForm.getUsername())) {
             boolean hasPermission = gateService.verificaPermissao(userLoginForm);
-            //todo: verificar se existe entrada sem saída
             if (hasPermission) {
-                //todo: avisa nodemcu
+                String message = "%s has exited".formatted(userLoginForm.getUsername());
+                rabbitNotify.enviarNotificacao(message);
                 gateService.saveExit(userLoginForm);
                 return ResponseEntity.status(HttpStatus.OK).body("Saida liberada");
             }
-            //todo: avisa nodemcu
+            String message = "Attempt:%s access denied".formatted(userLoginForm.getUsername());
+            rabbitNotify.enviarNotificacao(message);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso Negado");
         }
-        //todo:avisa nodemcu
+        String message = "Attempt:%s exit without an entry".formatted(userLoginForm.getUsername());
+        rabbitNotify.enviarNotificacao(message);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tentativa de saída sem entrada");
     }
 }
