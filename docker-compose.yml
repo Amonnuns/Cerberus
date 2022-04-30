@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: cerberususer
       POSTGRES_PASSWORD: cerberuspass
       PGDATA: /data/postgres
+    networks:
+      - cerberus_net
     volumes:
       - postgres_cerberus:/data/postgres
     ports:
@@ -27,6 +29,8 @@ services:
   rabbitmq:
     container_name: rabbit_cerberus
     build: .
+    networks:
+        - cerberus_net
     environment:
       RABBITMQ_DEFAULT_USER: cerberususer
       RABBITMQ_DEFAULT_PASS: cerberuspass
@@ -37,8 +41,28 @@ services:
       - "5672:5672"
       - "15672:15672"
       - "1883:1883"
+  doorman:
+    container_name: doorman
+    build:
+      context: ./doorman
+      dockerfile: Dockerfile.dev
+    networks:
+      - cerberus_net
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_HOST: postgresCerberus
+      RABBITMQ_HOST: rabbit_cerberus
+    command: ["./wait-for-it.sh", "rabbit_cerberus:5672","--", "java", "-jar", "target/doorman-1.0-SNAPSHOT.jar"]
+    depends_on:
+      - postgres
+      - rabbitmq
 
 volumes:
   postgres_cerberus:
   pgadmin_cerberus:
   rabbitmq_cerberus:
+networks:
+  cerberus_net:
+    driver: bridge
+
