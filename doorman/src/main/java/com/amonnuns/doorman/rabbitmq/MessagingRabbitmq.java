@@ -34,13 +34,13 @@ public class MessagingRabbitmq {
 
     @PostConstruct
     private void configureRabbitmq(){
-        //Queue cerberusQueue = queue(queueName);
+        Queue cerberusQueue = queue(queueName);
         TopicExchange notifyNODE = exchange();
-        //Binding mybinding = binding(cerberusQueue, notifyNODE);
+        Binding mybinding = binding(cerberusQueue, notifyNODE);
 
-        //amqpAdmin.declareQueue(cerberusQueue);
+        amqpAdmin.declareQueue(cerberusQueue);
         amqpAdmin.declareExchange(notifyNODE);
-        //amqpAdmin.declareBinding(mybinding);
+        amqpAdmin.declareBinding(mybinding);
 
     }
 
