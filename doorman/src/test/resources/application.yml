@@ -1,4 +1,9 @@
 spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:cerberususer}
+    password: ${RABBITMQ_PASS:cerberuspass}
   datasource:
     password: sa
     url: jdbc:h2:mem:mydb

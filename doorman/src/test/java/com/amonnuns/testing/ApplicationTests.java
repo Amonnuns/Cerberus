@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(classes = {com.amonnuns.doorman.DoormanApplication.class})
-@SpringBootTest(classes = {DoormanServiceTest.class, UserRepositoryTest.class})
+
+
 class ApplicationTests {
 
     @Test

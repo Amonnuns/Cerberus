@@ -2,7 +2,7 @@ server:
   port: ${DOORMAN_PORT:8080}
 spring:
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
+    host: ${RABBITMQ_HOST:127.0.0.1}
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USER:cerberususer}
     password: ${RABBITMQ_PASS:cerberuspass}
@@ -10,7 +10,7 @@ spring:
     name: doorman
   datasource:
     password: ${POSTGRES_PASS:cerberuspass}
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/user
+    url: jdbc:postgresql://${POSTGRES_HOST:127.0.0.1}:${POSTGRES_PORT:5432}/user
     username:  ${POSTGRES_USER:cerberususer}
   jpa:
     hibernate:
