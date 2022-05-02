@@ -11,12 +11,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 public class GateApplication {
 
-    @Value("${DOORMAN_HOST:'localhost:8080'}")
+    @Value("${DOORMAN_HOST:localhost}")
     private String doormanHost;
+
+    @Value("${DOORMAN_PORT:8080}")
+    private String doormanPort;
+
+    private String doormanHostAndPort;
+
     @Bean
     public WebClient webClient(WebClient.Builder builder){
+        doormanHostAndPort ="http://"+doormanHost+":"+doormanPort;
         return builder
-                .baseUrl(doormanHost)
+                .baseUrl(doormanHostAndPort)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
