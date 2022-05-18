@@ -2,15 +2,18 @@ version: "3"
 services:
   postgres:
     container_name: postgresCerberus
-    image: postgres
+    build:
+      context: ./Postgres
+      dockerfile: Dockerfile.dev
     environment:
       POSTGRES_USER: cerberususer
       POSTGRES_PASSWORD: cerberuspass
+      POSTGRES_DB: user
       PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
     networks:
       - cerberus_net
-    volumes:
-      - postgres_cerberus:/data/postgres
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -23,19 +26,23 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - pgadmin_cerberus:/var/lib/pgadmin
+    networks:
+      - cerberus_net
     ports:
       - "5050:80"
     restart: unless-stopped
   rabbitmq:
     container_name: rabbit_cerberus
-    build: .
+    build:
+      context: ./Rabbitmq
+      dockerfile: Dockerfile
     networks:
         - cerberus_net
     environment:
       RABBITMQ_DEFAULT_USER: cerberususer
       RABBITMQ_DEFAULT_PASS: cerberuspass
     volumes:
-      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./Rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - rabbitmq_cerberus:/var/lib/rabbitmq
     ports:
       - "5672:5672"
