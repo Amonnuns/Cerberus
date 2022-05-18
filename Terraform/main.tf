@@ -21,6 +21,14 @@ resource "azurerm_resource_group" "rg" {
     environment = "Cerberus ENV"
   }
 }
+resource "azurerm_storage_account" "mystorage" {
+  name                     = var.storage_name
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Premium"
+  account_replication_type = "LRS"
+  
+}
 
 resource "azurerm_kubernetes_cluster" "k8s" {
   name = var.cluster_name
@@ -37,9 +45,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   default_node_pool {
-      name            = "cerberuspool"
+      name            = var.pool_name
       node_count      = var.agent_count
-      vm_size         = "Standard_F4s_v2"
+      vm_size         = var.vm_size
   }
 
   service_principal {
