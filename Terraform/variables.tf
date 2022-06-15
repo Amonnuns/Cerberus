@@ -6,6 +6,10 @@ variable resource_group_name {
     default = "cerberusResourceGroup"
 }
 
+variable "container_registry_name" {
+  default = "ACRCerberus"
+}
+
 variable cluster_name {
     default = "k8scerberus"
 }

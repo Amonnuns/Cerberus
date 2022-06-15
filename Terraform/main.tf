@@ -30,11 +30,19 @@ resource "azurerm_storage_account" "mystorage" {
   
 }
 
+resource "azurerm_container_registry" "acr" {
+  name                = var.container_registry_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku = "Standard"
+}
+
 resource "azurerm_kubernetes_cluster" "k8s" {
   name = var.cluster_name
   location = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix = var.dns_prefix
+  #http_application_routing_enabled = true
 
   linux_profile {
       admin_username = "cerberus"
@@ -64,3 +72,4 @@ resource "azurerm_kubernetes_cluster" "k8s" {
       Environment = "Cerberus ENV"
   }
 }
+
