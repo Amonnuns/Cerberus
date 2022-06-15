@@ -9,14 +9,15 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Service
 public class GateService {
 
-    private WebClient webClient;
-    private GateRepository gateRepository;
-    private String exit = "Saída";
-    private String entry = "Entrada";
+    private final WebClient webClient;
+    private final GateRepository gateRepository;
+    private final String exit = "Saída";
+    private final String entry = "Entrada";
 
     public GateService(WebClient webClient, GateRepository gateRepository) {
         this.webClient = webClient;
@@ -56,22 +57,16 @@ public class GateService {
     }
 
     public boolean hasExited(String username) {
-        UserHistoricalModel historical = gateRepository
-                .findFirstByUserNameOrderByDateOfInsertDesc(username);
+        Optional<UserHistoricalModel> historical = Optional.ofNullable(gateRepository
+                .findFirstByUserNameOrderByDateOfInsertDesc(username));
 
-        if(this.exit.equals(historical.getActionType())){
-            return true;
-        }
-        return false;
+        return historical.isEmpty() || this.exit.equals(historical.get().getActionType());
     }
 
     public boolean hasEntered(String username) {
         UserHistoricalModel historical = gateRepository
                 .findFirstByUserNameOrderByDateOfInsertDesc(username);
 
-        if(this.entry.equals(historical.getActionType())){
-            return true;
-        }
-        return false;
+        return this.entry.equals(historical.getActionType());
     }
 }
