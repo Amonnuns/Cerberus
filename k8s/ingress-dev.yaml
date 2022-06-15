@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cerberus
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: cerberus.2fc55b2f25f94566b130.brazilsouth.aksapp.io #for new instaces we must substitute dns (everything after cerberus.)
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: rabbitmq
+            port: 
+              number: 15672
+      - path: /api/v1/gate
+        pathType: Prefix
+        backend:
+          service: 
+            name: client-cluster-ip-service
+            port: 
+              number: 8081
+      - path: /api/v1/doorman
+        pathType: Prefix
+        backend:
+          service: 
+            name: doorman-cluster-ip-service
+            port: 
+              number: 8080

@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx-cerberus
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: cerberus.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+            service: 
+              name: rabbitmq
+              port: 
+                number: 15672
+      - path: /api/v1/gate
+        pathType: Prefix
+        backend:
+          service: 
+            name: client-cluster-ip-service
+            port: 
+              number: 8081
+      - path: /api/v1/doorman
+        pathType: Prefix
+        backend:
+          service: 
+            name: doorman-cluster-ip-service
+            port: 
+              number: 8080
+
+      
