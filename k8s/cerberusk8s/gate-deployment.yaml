@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gate-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: gateApp
+  template:
+    metadata:
+      labels:
+        component: gateApp
+    spec:
+      containers:
+        - name: gate
+          image: ramonnuns/cerberus-gate
+          command: ["./wait-for-it.sh", "rabbit_cerberus:5672","--", "java", "-jar", "target/gate-1.0-SNAPSHOT.jar"]
+          env:
+            - name: POSTGRES_HOST
+              value: postgres-cluster-ip-service
+            - name: POSTGRES_PASS
+              valueFrom: 
+                secretKeyRef:
+                  name: postgres-secret
+                  key: PGPASSWORD
+            - name: RABBITMQ_HOST
+              value: "rabbitmq-0.rabbitmq.default.svc.cluster.local"
+            - name: RABBIT_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: RABBITMQ_PASS
+            - name: DOORMAN_HOST
+              value: doorman-cluster-ip-service
+            - name: DOORMAN_PORT
+              value: '8080'
+          ports:
+            - containerPort: 8081
