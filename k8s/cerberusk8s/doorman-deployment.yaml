@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doorman-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: doormanApp
+  template:
+    metadata:
+      labels:
+        component: doormanApp
+    spec:
+      containers:
+        - name: doorman
+          image: ramonnuns/cerberus-doorman
+          command: ["./wait-for-it.sh", "$RABBITMQ_HOST:5672","--", "java", "-jar", "target/doorman-1.0-SNAPSHOT.jar"]
+          env:
+            - name: POSTGRES_HOST
+              value: postgres-cluster-ip-service
+            - name: POSTGRES_PASS
+              valueFrom: 
+                secretKeyRef:
+                  name: postgres-secret
+                  key: PGPASSWORD
+            - name: RABBITMQ_HOST
+              value: "rabbitmq-0.rabbitmq.default.svc.cluster.local"
+            - name: RABBIT_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: RABBITMQ_PASS
+          ports:
+            - containerPort: 8080
