@@ -20,40 +20,41 @@ public class GateController {
     @PostMapping("/entry")
     public ResponseEntity<Object> entrada( @RequestBody UserLoginForm userLoginForm){
 
-        if(gateService.hasExited(userLoginForm.getUsername())) {
-            boolean hasPermission = gateService.verificaPermissao(userLoginForm);
-            if (hasPermission) {
+        boolean hasPermission = gateService.verificaPermissao(userLoginForm);
+        if(hasPermission) {
+            if (gateService.hasExited(userLoginForm.getUsername())) {
                 String message = "%s has entered".formatted(userLoginForm.getUsername());
                 rabbitNotify.enviarNotificacao(message);
                 gateService.saveEntry(userLoginForm);
                 return ResponseEntity.status(HttpStatus.OK).body("Acesso liberado");
             }
-            String message = "Attempt:%s access denied".formatted(userLoginForm.getUsername());
+            String message = "%s has already entered".formatted(userLoginForm.getUsername());
             rabbitNotify.enviarNotificacao(message);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso Negado");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Entrada Duplicada");
         }
-        String message = "%s has already entered".formatted(userLoginForm.getUsername());
+        String message = "Attempt:%s access denied".formatted(userLoginForm.getUsername());
         rabbitNotify.enviarNotificacao(message);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Entrada Duplicada");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso Negado");
+
     }
 
     @PostMapping("/exit")
     public ResponseEntity<Object> saida( @RequestBody UserLoginForm userLoginForm) {
 
-        if (gateService.hasEntered(userLoginForm.getUsername())) {
-            boolean hasPermission = gateService.verificaPermissao(userLoginForm);
-            if (hasPermission) {
+        boolean hasPermission = gateService.verificaPermissao(userLoginForm);
+        if (hasPermission) {
+            if (gateService.hasEntered(userLoginForm.getUsername())) {
                 String message = "%s has exited".formatted(userLoginForm.getUsername());
                 rabbitNotify.enviarNotificacao(message);
                 gateService.saveExit(userLoginForm);
                 return ResponseEntity.status(HttpStatus.OK).body("Saida liberada");
             }
-            String message = "Attempt:%s access denied".formatted(userLoginForm.getUsername());
+            String message = "Attempt:%s exit without an entry".formatted(userLoginForm.getUsername());
             rabbitNotify.enviarNotificacao(message);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso Negado");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tentativa de saída sem entrada");
         }
-        String message = "Attempt:%s exit without an entry".formatted(userLoginForm.getUsername());
+        String message = "Attempt:%s access denied".formatted(userLoginForm.getUsername());
         rabbitNotify.enviarNotificacao(message);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tentativa de saída sem entrada");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso Negado");
     }
 }
