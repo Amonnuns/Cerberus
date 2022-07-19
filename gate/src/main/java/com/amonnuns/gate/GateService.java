@@ -16,8 +16,6 @@ public class GateService {
 
     private final WebClient webClient;
     private final GateRepository gateRepository;
-    private final String exit = "Saída";
-    private final String entry = "Entrada";
 
     public GateService(WebClient webClient, GateRepository gateRepository) {
         this.webClient = webClient;
@@ -26,17 +24,14 @@ public class GateService {
 
     public boolean verificaPermissao(UserLoginForm userLoginForm) {
         Mono<Boolean> result = null;
-        try {
-             result = this.webClient.method(HttpMethod.POST)
-                    .uri("/api/v1/doorman/permission")
-                    .bodyValue(userLoginForm)
-                    .retrieve()
-                    .bodyToMono(Boolean.class);
+        result = this.webClient.method(HttpMethod.POST)
+                .uri("/api/v1/doorman/permission")
+                .bodyValue(userLoginForm)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .onErrorReturn(false);
 
-        } catch (Exception ex){
-            System.out.println("Doorman is not available "+ ex.getMessage());
-        }
-        return Boolean.TRUE.equals(result.block());
+        return result.block();
     }
 
     public void saveEntry(UserLoginForm userLoginForm) {
@@ -63,13 +58,15 @@ public class GateService {
         Optional<UserHistoricalModel> historical = Optional.ofNullable(gateRepository
                 .findFirstByUserNameOrderByDateOfInsertDesc(username));
 
-        return historical.isEmpty() || this.exit.equals(historical.get().getActionType());
+        String exit = "Saída";
+        return historical.isEmpty() || exit.equals(historical.get().getActionType());
     }
 
     public boolean hasEntered(String username) {
         UserHistoricalModel historical = gateRepository
                 .findFirstByUserNameOrderByDateOfInsertDesc(username);
 
-        return this.entry.equals(historical.getActionType());
+        String entry = "Entrada";
+        return entry.equals(historical.getActionType());
     }
 }
