@@ -1,10 +1,15 @@
 package com.amonnuns.doorman;
 
 import com.amonnuns.doorman.rabbitmq.RabbitNotify;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @RestController
@@ -21,7 +26,10 @@ public class DoormanController {
 
 
     @PostMapping("/subscribe")
-    public ResponseEntity<Object> cadastraUsuario(@RequestBody User user){
+    public ResponseEntity<Object> cadastraUsuario(@Valid @RequestBody UserDto userDto){
+
+        var user = new User();
+        BeanUtils.copyProperties(userDto,user);
 
         Optional<User> userReturn = doormanService.cadastrarUsuário(user);
         if(userReturn.isEmpty()){
@@ -35,13 +43,13 @@ public class DoormanController {
     }
 
     @PostMapping("/permission")
-    public boolean verificaPermissao(@RequestBody UserLoginForm loginForm){
+    public boolean verificaPermissao(@Valid @RequestBody UserLoginForm loginForm){
 
         return doormanService.verificaPermissao(loginForm);
     }
 
     @PostMapping("/block/{username}")
-    public ResponseEntity<Object> bloqueiaUsuario(@PathVariable(value = "username") String username){
+    public ResponseEntity<Object> bloqueiaUsuario(@NotNull @PathVariable(value = "username") String username){
 
         if(doormanService.bloqueiaUsuario(username)){
             String message = "Username: %s was blocked".formatted(username);
@@ -51,7 +59,7 @@ public class DoormanController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esse usuário não existe");
     }
     @PostMapping("/unblock/{username}")
-    public ResponseEntity<Object> desbloqueiaUsuario(@PathVariable(value = "username") String username){
+    public ResponseEntity<Object> desbloqueiaUsuario(@NotNull @PathVariable(value = "username") String username){
 
         if(doormanService.desbloqueiaUsuario(username)){
             String message = "Username: %s was unblocked".formatted(username);
