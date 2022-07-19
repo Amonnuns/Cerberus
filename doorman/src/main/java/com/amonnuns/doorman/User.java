@@ -19,9 +19,9 @@ public class User {
     private String firstName;
     @Column(nullable = false, length = 70)
     private String lastName;
-    @Column(nullable = false, length = 70, unique = true)
+    @Column(nullable = false, length = 10, unique = true)
     private String userName;
-    @Column(nullable = false, length = 70)
+    @Column(nullable = false, length = 12)
     private String password;
     @Column(columnDefinition = "boolean default false")
     private Boolean isBlocked;

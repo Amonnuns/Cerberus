@@ -1,15 +1,24 @@
 package com.amonnuns.doorman;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class UserLoginForm {
+    @NotBlank
+    @Size(max=10)
     private String username;
+    @NotBlank
+    @Size(min = 6,max = 12)
     private String password;
 
-    public UserLoginForm(@JsonProperty("username") String username,
-                         @JsonProperty("password") String password) {
+    public UserLoginForm(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserLoginForm(){
+
     }
 
     public String getUsername() {
