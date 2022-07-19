@@ -25,15 +25,18 @@ public class GateService {
     }
 
     public boolean verificaPermissao(UserLoginForm userLoginForm) {
+        Mono<Boolean> result = null;
+        try {
+             result = this.webClient.method(HttpMethod.POST)
+                    .uri("/api/v1/doorman/permission")
+                    .bodyValue(userLoginForm)
+                    .retrieve()
+                    .bodyToMono(Boolean.class);
 
-        Mono<Boolean> result = this.webClient.method(HttpMethod.POST)
-                .uri("/api/v1/doorman/permission")
-                .bodyValue(userLoginForm)
-                .retrieve()
-                .bodyToMono(Boolean.class);
-
-        return result.block();
-
+        } catch (Exception ex){
+            System.out.println("Doorman is not available "+ ex.getMessage());
+        }
+        return Boolean.TRUE.equals(result.block());
     }
 
     public void saveEntry(UserLoginForm userLoginForm) {
